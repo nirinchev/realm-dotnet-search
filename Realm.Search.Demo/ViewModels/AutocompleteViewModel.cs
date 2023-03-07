@@ -5,37 +5,9 @@ using Realm.Search.Demo.Services;
 
 namespace Realm.Search.Demo.ViewModels
 {
-    public partial class AutocompleteViewModel : ObservableObject
+    public partial class AutocompleteViewModel : SearchableViewModelBase<Movie, string>
     {
-        private readonly Action<string> _searchDebouncer;
-
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(HasResults))]
-        [NotifyPropertyChangedFor(nameof(IsSearching))]
-        private Movie[] results = Array.Empty<Movie>();
-
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsSearching))]
-        private string searchQuery = string.Empty;
-
-        public bool HasResults => Results.Any();
-
-        public bool IsSearching => !HasResults && !string.IsNullOrEmpty(SearchQuery);
-
-        public AutocompleteViewModel()
-        {
-            Action<string> search = (query) => _ = Search(query);
-
-            _searchDebouncer = search.Debounce();
-        }
-
-        partial void OnSearchQueryChanged(string value)
-        {
-            Results = Array.Empty<Movie>();
-            _searchDebouncer(value);
-        }
-
-        private async Task Search(string query)
+        protected override async Task Search(string query)
         {
             if (string.IsNullOrEmpty(query))
             {
@@ -54,6 +26,11 @@ namespace Realm.Search.Demo.ViewModels
             {
                 UserDialogs.Instance.Alert($"An error occurred while executing search: {ex}", "Failed to execute search");
             }
+        }
+
+        protected override void TriggerSearch()
+        {
+            _searchDebouncer(SearchQuery);
         }
     }
 }

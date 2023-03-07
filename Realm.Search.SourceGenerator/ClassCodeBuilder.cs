@@ -98,6 +98,7 @@ namespace Realm.Search.SourceGenerator
                     propertiesSB.AppendLine($@"[BsonElement(""{property.MapTo}"")]");
                 }
 
+                propertiesSB.AppendLine("[BsonIgnoreIfDefault]");
                 propertiesSB.AppendLine($@"public bool {property.Name} {{ get; set; }}");
             }
 

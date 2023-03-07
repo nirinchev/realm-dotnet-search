@@ -9,4 +9,14 @@
   <ItemGroup>
     <PackageReference Include="Realm" Version="10.20.0" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="Helpers\" />
+    <None Remove="Options\" />
+    <None Remove="SearchDefinitions\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Helpers\" />
+    <Folder Include="Options\" />
+    <Folder Include="SearchDefinitions\" />
+  </ItemGroup>
 </Project>

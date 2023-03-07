@@ -34,6 +34,13 @@
                 CommandParameter="autocomplete"
                 HorizontalOptions="Center" />
 
+            <Button
+                Text="Compound"
+                SemanticProperties.Hint="Navigates to the compound demo"
+                Command="{Binding NavigateCommand}"
+                CommandParameter="compound"
+                HorizontalOptions="Center" />
+
         </VerticalStackLayout>
     </ScrollView>
 

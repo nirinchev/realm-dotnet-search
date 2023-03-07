@@ -10,7 +10,7 @@ namespace Realm.Search.Demo.Converters
         public object? Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             var model = values[0] as ISearchModel;
-            var searchQuery = values[1] as string;
+            var searchQuery = values.ElementAtOrDefault(1) as string;
             var path = parameter as string ?? throw new Exception("path must be supplied as converter parameter");
 
             if (model == null)
@@ -25,7 +25,7 @@ namespace Realm.Search.Demo.Converters
             }
 
             var result = new FormattedString();
-            if (model.SearchHighlights != null && searchQuery != null)
+            if (model.SearchHighlights != null)
             {
                 var title = property.GetCustomAttribute<BsonElementAttribute>()?.ElementName ?? path;
                 var highlight = model.SearchHighlights.FirstOrDefault(m => m.Path == title);
@@ -36,8 +36,15 @@ namespace Realm.Search.Demo.Converters
                         switch (text.Type)
                         {
                             case HighlightTextType.Hit:
-                                result.Spans.Add(CreateSpan(text.Value.Substring(0, searchQuery.Length), isHit: true));
-                                result.Spans.Add(CreateSpan(text.Value.Substring(searchQuery.Length), isHit: false));
+                                if (searchQuery != null)
+                                {
+                                    result.Spans.Add(CreateSpan(text.Value.Substring(0, searchQuery.Length), isHit: true));
+                                    result.Spans.Add(CreateSpan(text.Value.Substring(searchQuery.Length), isHit: false));
+                                }
+                                else
+                                {
+                                    result.Spans.Add(CreateSpan(text.Value, isHit: true));
+                                }
                                 break;
                             case HighlightTextType.Text:
                                 result.Spans.Add(CreateSpan(text.Value, isHit: false));

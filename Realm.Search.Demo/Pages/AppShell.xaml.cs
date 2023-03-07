@@ -9,6 +9,7 @@ public partial class AppShell : Shell
 		InitializeComponent();
 
         Routing.RegisterRoute("autocomplete", typeof(AutocompletePage));
+        Routing.RegisterRoute("compound", typeof(CompoundPage));
     }
 }
 
