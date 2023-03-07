@@ -55,7 +55,7 @@ namespace Realm.Search.SourceGenerator
 
         private string GeneratePartialClass(string projectionString)
         {
-            var classString = $@"{SyntaxFacts.GetText(_classInfo.Accessibility)} partial class {_classInfo.Name} : ISearchModel<{_classInfo.Name}.Projection>
+            var classString = $@"{SyntaxFacts.GetText(_classInfo.Accessibility)} partial class {_classInfo.Name}
 {{
     public static Projection DefaultProjection => Projection.Default;
 

@@ -2,21 +2,42 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>11.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
     <DocumentationFile>bin\Debug\netstandard2.0\Realm.Search.xml</DocumentationFile>
     <Nullable>enable</Nullable>
+    <PackageId>Realm.Search</PackageId>
+    <Title>Realm + Atlas Search</Title>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <Description>
+      This package includes extension methods for Realm to simplify constructing Atlas Search queries.
+      To get started, construct a search client `var client = user.GetMongoClient().GetDatabase("myDatabase").GetCollection&lt;MyModel&gt;("myCollection").Search()`.
+
+      **Note** that this is calling the remote Atlas Search API through Atlas App Services and does not add full text search functionality for the local Realm database. To get started
+    </Description>
+    <PackageTags>Realm;MongoDB;Atlas;Atlas Search;Full Text Search;Database;Atlas App Services</PackageTags>
+    <Company>Realm Inc.</Company>
+    <Copyright>Copyright © $([System.DateTime]::Now.ToString(yyyy)) Realm Inc.</Copyright>
+    <Authors>nirinchev</Authors>
+    <owners>nirinchev</owners>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/nirinchev/realm-dotnet-search</PackageProjectUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageOutputPath>$(MsBuildThisFileDirectory)..\packages</PackageOutputPath>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <DisableFody>true</DisableFody>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Realm" Version="10.20.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <None Remove="Helpers\" />
-    <None Remove="Options\" />
-    <None Remove="SearchDefinitions\" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-    <Folder Include="Options\" />
-    <Folder Include="SearchDefinitions\" />
+
+  <ItemGroup Label="Package">
+    <None Include="..\Realm.Search.SourceGenerator\bin\$(Configuration)\netstandard2.0\Realm.Search.SourceGenerator.dll" PackagePath="analyzers\dotnet\cs" Pack="true" Visible="false" />
   </ItemGroup>
 </Project>
