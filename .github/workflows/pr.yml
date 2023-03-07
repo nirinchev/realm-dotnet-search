@@ -73,11 +73,11 @@ jobs:
         echo "version=$pkgVersion" >> $GITHUB_OUTPUT
       shell: bash
 
-    - name: Store artifacts for Realm.Search.SourceGenerator.${{ steps.get-version.outputs.version }}
+    - name: Store artifacts for Realm.Search.${{ steps.get-version.outputs.version }}
       uses: actions/upload-artifact@v3
       with:
-        name: Realm.Search.SourceGenerator.${{ steps.get-version.outputs.version }}
-        path: ${{ github.workspace }}/packages/Realm.SourceGenerator.${{ steps.get-version.outputs.version }}.*nupkg
+        name: Realm.Search.${{ steps.get-version.outputs.version }}
+        path: ${{ github.workspace }}/packages/Realm.Search.${{ steps.get-version.outputs.version }}.*nupkg
         retention-days: ${{ github.event_name != 'pull_request' && 30 || 1 }}
         if-no-files-found: error
 
