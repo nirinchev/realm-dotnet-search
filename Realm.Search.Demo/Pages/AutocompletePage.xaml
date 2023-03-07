@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Realm.Search.Demo.Pages.AutocompletePage"
+             Title="Autocomplete Demo">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Entry x:Name="SearchEntry"
+               Placeholder="Search for movies"
+               Text="{Binding SearchQuery}"
+               VerticalOptions="Start"
+               HorizontalOptions="FillAndExpand" />
+
+        <ActivityIndicator IsVisible="{Binding IsSearching}"
+                           IsRunning="{Binding IsSearching}"
+                           Grid.Row="1"
+                           VerticalOptions="Start" HorizontalOptions="Center" />
+
+        <ListView IsVisible="{Binding HasResults}"
+                  ItemsSource="{Binding Results}"
+                  SeparatorVisibility="None"
+                  Grid.Row="1">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid Padding="10">
+                            <Label HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                <Label.FormattedText>
+                                    <MultiBinding Converter="{StaticResource SearchModelToFormattedStringConverter}" ConverterParameter="Title">
+                                        <Binding />
+                                        <Binding Path="Text" Source="{x:Reference SearchEntry}"/>
+                                    </MultiBinding>
+                                </Label.FormattedText>
+                            </Label>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</ContentPage>
