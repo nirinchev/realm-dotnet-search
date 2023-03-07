@@ -46,7 +46,6 @@
 
     <!-- Images -->
     <MauiImage Include="Resources\Images\*" />
-    <MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
 
     <!-- Custom Fonts -->
     <MauiFont Include="Resources\Fonts\*" />
@@ -69,16 +68,12 @@
 
   <ItemGroup>
     <BundleResource Include="Resources\Images\atlas_search.png" />
-    <BundleResource Include="Resources\Images\atlas_search.png" />
-    <BundleResource Include="Resources\Images\atlas_search.png" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Pages\" />
     <None Remove="ViewModels\" />
     <None Remove="Services\" />
     <None Remove="Models\" />
-    <None Remove="config.json" />
-    <None Remove="Resources\Images\Technical_ATLAS_FullTextSearch10x.png" />
     <None Remove="Resources\Images\atlas_search.png" />
     <None Remove="Helpers\" />
     <None Remove="Converters\" />
@@ -91,13 +86,13 @@
     <Folder Include="Helpers\" />
     <Folder Include="Converters\" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(UseRealmNupkgsWithVersion)' == ''">
     <ProjectReference Include="..\Realm.Search\Realm.Search.csproj" />
     <ProjectReference Include="..\Realm.Search.SourceGenerator\Realm.Search.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
-  <ItemGroup>
-    <None Update="config.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+
+  <ItemGroup Condition="'$(UseRealmNupkgsWithVersion)' != ''">
+    <PackageReference Include="Realm.Search" Version="$(UseRealmNupkgsWithVersion)" PrivateAssets="None" />
   </ItemGroup>
+
 </Project>

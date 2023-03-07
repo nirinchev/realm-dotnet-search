@@ -1,0 +1,119 @@
+name: PR Build
+"on":
+  pull_request:
+    paths:
+    - '**.cs'
+    - .github/workflows/*.yml
+    - .github/actions/**
+
+env:
+  REALM_DISABLE_ANALYTICS: true
+  DOTNET_NOLOGO: true
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  build-packages:
+    runs-on: windows-latest
+    name: Build Packages
+    timeout-minutes: 45
+    outputs:
+      package_version: ${{ steps.get-version.outputs.version }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+
+    - name: Register csc problem matcher
+      run: echo "::add-matcher::.github/problem-matchers/csc.json"
+
+    - name: Register msvc problem matcher
+      run: echo "::add-matcher::.github/problem-matchers/msvc.json"
+
+    - name: Configure .NET
+      uses: actions/setup-dotnet@607fce577a46308457984d59e4954e075820f10a
+      with:
+        dotnet-version: 7.0.x
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@0b44c6745b7e81956596964100aadb92d667c497
+
+    - name: Set version suffix
+      id: set-version-suffix
+      run: |
+        $suffix = ""
+        if ($env:GITHUB_EVENT_NAME -eq "pull_request")
+        {
+          if (-Not "${{ github.head_ref }}".Contains("release"))
+          {
+            $suffix = "pr-${{ github.event.number }}.$env:GITHUB_RUN_NUMBER"
+          }
+        }
+        else
+        {
+          $suffix = "alpha.$env:GITHUB_RUN_NUMBER"
+        }
+        echo "build_suffix=$suffix" >> $Env:GITHUB_OUTPUT
+
+    - name: Build Realm.Search.SourceGenerator
+      run: dotnet build Realm.Search.SourceGenerator /p:Configuration=Release -restore
+
+    - name: Build Realm.Search
+      run: dotnet build Realm.Search /t:Pack /p:Configuration=Release -restore /p:VersionSuffix=${{ steps.set-version-suffix.outputs.build_suffix }}
+
+    - name: Read version
+      id: get-version
+      run: |
+        cd packages
+        pkgVersion=$(find . -type f -iname "Realm.Fody.*.nupkg" -exec basename {} \; | sed -n 's/Realm.Search.SourceGenerator\.\(.*\)\.nupkg$/\1/p')
+        echo "version=$pkgVersion" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Store artifacts for Realm.Search.SourceGenerator.${{ steps.get-version.outputs.version }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: Realm.Search.SourceGenerator.${{ steps.get-version.outputs.version }}
+        path: ${{ github.workspace }}/packages/Realm.SourceGenerator.${{ steps.get-version.outputs.version }}.*nupkg
+        retention-days: ${{ github.event_name != 'pull_request' && 30 || 1 }}
+        if-no-files-found: error
+
+  build-ios-demo:
+    runs-on: macos-latest
+    name: Build iOS demo
+    timeout-minutes: 45
+    needs:
+    - build-packages
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+
+    - name: Register csc problem matcher
+      run: echo "::add-matcher::.github/problem-matchers/csc.json"
+
+    - name: Register msvc problem matcher
+      run: echo "::add-matcher::.github/problem-matchers/msvc.json"
+
+    - name: Configure .NET
+      uses: actions/setup-dotnet@607fce577a46308457984d59e4954e075820f10a
+      with:
+        dotnet-version: 7.0.x
+
+    - name: Setup workloads
+      run: |
+        dotnet workload install maui
+
+    - name: Fetch Realm
+      uses: actions/download-artifact@v3
+      with:
+        name: Realm.Search.${{ needs.build-packages.outputs.package_version }}
+        path: ${{ github.workspace }}/packages/
+
+    - name: Build the tests
+      run: dotnet build Realm.Search.Demo -c Release -f net7.0-ios /p:RestoreConfigFile=Local.NuGet.Config /p:UseRealmNupkgsWithVersion=${{ needs.build-packages.outputs.package_version }}
