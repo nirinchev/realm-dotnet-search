@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Realm.Search.SourceGenerator;
 
@@ -13,9 +12,9 @@ internal class Parser
     private readonly GeneratorExecutionContext _context;
 
     public Parser(GeneratorExecutionContext context)
-	{
+    {
         _context = context;
-	}
+    }
 
     public ParsingResults Parse(IEnumerable<SearchClassDefinition> realmClasses)
     {
@@ -58,7 +57,7 @@ internal class Parser
                     var propertiesSyntax = classDeclarationSyntax.ChildNodes().OfType<PropertyDeclarationSyntax>();
 
                     classInfo.Usings.AddRange(GetUsings(classDeclarationSyntax));
-                    classInfo.Properties.AddRange(GetProperties(classInfo, propertiesSyntax, semanticModel));
+                    classInfo.Properties.AddRange(GetProperties(propertiesSyntax, semanticModel));
                 }
 
                 result.ClassInfo.Add(classInfo);
@@ -78,7 +77,7 @@ internal class Parser
         return result;
     }
 
-    private IEnumerable<PropertyInfo> GetProperties(ClassInfo classInfo, IEnumerable<PropertyDeclarationSyntax> propertyDeclarationSyntaxes, SemanticModel model)
+    private IEnumerable<PropertyInfo> GetProperties(IEnumerable<PropertyDeclarationSyntax> propertyDeclarationSyntaxes, SemanticModel model)
     {
         foreach (var propSyntax in propertyDeclarationSyntaxes)
         {
@@ -91,7 +90,7 @@ internal class Parser
 
             var info = new PropertyInfo(propSymbol.Name)
             {
-                Accessibility = propSymbol.DeclaredAccessibility,
+                MapTo = propSymbol.GetAttributeArgument("BsonElementAttribute") as string,
             };
 
             yield return info;

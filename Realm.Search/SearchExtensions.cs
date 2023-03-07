@@ -1,10 +1,10 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using Realm.Search;
+using Realms.Search;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
-using MongoDB.Bson;
-using Realm.Search;
-using Realms.Search;
 
 namespace Realms.Sync;
 
@@ -34,7 +34,7 @@ public static class SearchExtensions
         };
 
         var autocompleteStage = new BsonDocument("autocomplete", autocompleteDefinition);
-        return collection.SearchCore<TModel>(autocompleteStage, projection, highlightOptions, limit);
+        return collection.SearchCore(autocompleteStage, projection, highlightOptions, limit);
     }
 
     private static Task<TModel[]> SearchCore<TModel>(this MongoClient.Collection<TModel> collection, BsonDocument searchStage, ProjectionModel? projection, HighlightOptions? highlightOptions, int? limit)

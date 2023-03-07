@@ -6,19 +6,19 @@ using Realm.Search.Demo.Services;
 namespace Realm.Search.Demo.ViewModels
 {
     public partial class AutocompleteViewModel : ObservableObject
-	{
+    {
         private readonly Action<string> _searchDebouncer;
 
         [ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(HasResults))]
-		[NotifyPropertyChangedFor(nameof(IsSearching))]
+        [NotifyPropertyChangedFor(nameof(HasResults))]
+        [NotifyPropertyChangedFor(nameof(IsSearching))]
         private Movie[] results = Array.Empty<Movie>();
 
         [ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(IsSearching))]
-		private string searchQuery = string.Empty;
+        [NotifyPropertyChangedFor(nameof(IsSearching))]
+        private string searchQuery = string.Empty;
 
-		public bool HasResults => Results.Any();
+        public bool HasResults => Results.Any();
 
         public bool IsSearching => !HasResults && !string.IsNullOrEmpty(SearchQuery);
 

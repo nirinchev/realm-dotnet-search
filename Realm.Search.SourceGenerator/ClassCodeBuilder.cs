@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis.CSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 
 namespace Realm.Search.SourceGenerator
 {
@@ -56,8 +55,7 @@ namespace Realm.Search.SourceGenerator
 
         private string GeneratePartialClass(string projectionString)
         {
-            var classString = $@"[Generated]
-{SyntaxFacts.GetText(_classInfo.Accessibility)} partial class {_classInfo.Name} : ISearchModel<{_classInfo.Name}.Projection>
+            var classString = $@"{SyntaxFacts.GetText(_classInfo.Accessibility)} partial class {_classInfo.Name} : ISearchModel<{_classInfo.Name}.Projection>
 {{
     public static Projection DefaultProjection => Projection.Default;
 
@@ -95,14 +93,19 @@ namespace Realm.Search.SourceGenerator
             {
                 defaultsSB.AppendLine($"{property.Name} = true,");
 
-                propertiesSB.AppendLine(property.ToString());
+                if (property.MapTo != null)
+                {
+                    propertiesSB.AppendLine($@"[BsonElement(""{property.MapTo}"")]");
+                }
+
+                propertiesSB.AppendLine($@"public bool {property.Name} {{ get; set; }}");
             }
 
             return $@"public class Projection : ProjectionModel
 {{
     public static Projection Default => new()
     {{
-{defaultsSB.ToString().Indent(2)}
+{defaultsSB.ToString().Indent(2, trimNewLines: true)}
     }};
 
     public static Projection NoId
@@ -117,9 +120,9 @@ namespace Realm.Search.SourceGenerator
 
             return result;
         }}
-    }};
+    }}
 
-{propertiesSB.ToString().Indent()}
+{propertiesSB.ToString().Indent(trimNewLines: true)}
 }}";
         }
     }

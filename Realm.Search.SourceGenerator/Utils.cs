@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
 using System.Linq;
 using System.Text;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Realm.Search.SourceGenerator;
 
@@ -28,6 +28,12 @@ internal static class Utils
     public static bool HasAttribute(this ISymbol symbol, string attributeName)
     {
         return symbol.GetAttributes().Any(a => a.AttributeClass?.Name == attributeName);
+    }
+
+    public static object? GetAttributeArgument(this ISymbol symbol, string attributeName)
+    {
+        var attribute = symbol.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == attributeName);
+        return attribute?.ConstructorArguments[0].Value;
     }
 
     public static bool IsAutomaticProperty(this PropertyDeclarationSyntax propertySyntax)

@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 25.0.1705.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Realm.Search", "Realm.Search\Realm.Search.csproj", "{2BB191CB-C44C-4CE4-8A8B-9D6BFCC943F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Realm.Search", "Realm.Search\Realm.Search.csproj", "{2BB191CB-C44C-4CE4-8A8B-9D6BFCC943F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Realm.Search.Demo", "Realm.Search.Demo\Realm.Search.Demo.csproj", "{70019465-5ADB-4F12-8910-A197E9AE798A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Realm.Search.Demo", "Realm.Search.Demo\Realm.Search.Demo.csproj", "{70019465-5ADB-4F12-8910-A197E9AE798A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Realm.Search.SourceGenerator", "Realm.Search.SourceGenerator\Realm.Search.SourceGenerator.csproj", "{DB74179B-620F-4E8B-84ED-7917440D8FF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Realm.Search.SourceGenerator", "Realm.Search.SourceGenerator\Realm.Search.SourceGenerator.csproj", "{DB74179B-620F-4E8B-84ED-7917440D8FF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +21,7 @@ Global
 		{2BB191CB-C44C-4CE4-8A8B-9D6BFCC943F9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{70019465-5ADB-4F12-8910-A197E9AE798A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{70019465-5ADB-4F12-8910-A197E9AE798A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70019465-5ADB-4F12-8910-A197E9AE798A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{70019465-5ADB-4F12-8910-A197E9AE798A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70019465-5ADB-4F12-8910-A197E9AE798A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DB74179B-620F-4E8B-84ED-7917440D8FF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

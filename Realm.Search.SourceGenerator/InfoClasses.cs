@@ -1,8 +1,6 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using Microsoft.CodeAnalysis;
 
 namespace Realm.Search.SourceGenerator;
 
@@ -51,5 +49,5 @@ internal record EnclosingClassInfo(string Name, Accessibility Accessibility);
 
 internal record PropertyInfo(string Name)
 {
-    public Accessibility Accessibility { get; set; }
+    public string? MapTo { get; set; }
 }

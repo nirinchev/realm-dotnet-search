@@ -1,5 +1,4 @@
-﻿using System;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using Realms.Search;
 
 namespace Realm.Search.Demo.Models;
@@ -7,6 +6,11 @@ namespace Realm.Search.Demo.Models;
 [BsonIgnoreExtraElements]
 public partial class Movie : ISearchModel
 {
-	[BsonElement("title")]
-	public string Title { get; set; }
+    [BsonElement("title")]
+    public string Title { get; set; }
+
+    private void Foo()
+    {
+        var test = Projection.Default;
+    }
 }

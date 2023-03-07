@@ -7,7 +7,7 @@ namespace Realm.Search.Demo.Models;
 
 #nullable enable
 
-public partial class Movie2 : ISearchModel<Movie2.Projection>
+public partial class Movie2 // : ISearchModel<Movie2.Projection>
 {
     public static Projection DefaultProjection => Projection.Default;
 
