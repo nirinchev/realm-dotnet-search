@@ -1,0 +1,6 @@
+{
+  "appId": "<insert-your-app-id>",
+  "serverUrl": "https://realm.mongodb.com",
+  "serviceName": "mongodb-atlas",
+  "databaseName": "sample_mflix"
+}
