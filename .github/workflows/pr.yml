@@ -58,6 +58,7 @@ jobs:
           $suffix = "alpha.$env:GITHUB_RUN_NUMBER"
         }
         echo "build_suffix=$suffix" >> $Env:GITHUB_OUTPUT
+        echo "Inferred suffix: $suffix"
 
     - name: Build Realm.Search.SourceGenerator
       run: dotnet build Realm.Search.SourceGenerator /p:Configuration=Release -restore
@@ -69,8 +70,9 @@ jobs:
       id: get-version
       run: |
         cd packages
-        pkgVersion=$(find . -type f -iname "Realm.Fody.*.nupkg" -exec basename {} \; | sed -n 's/Realm.Search\.\(.*\)\.nupkg$/\1/p')
+        pkgVersion=$(find . -type f -iname "Realm.Search.*.nupkg" -exec basename {} \; | sed -n 's/Realm.Search\.\(.*\)\.nupkg$/\1/p')
         echo "version=$pkgVersion" >> $GITHUB_OUTPUT
+        echo "Found version: $pkgVersion"
       shell: bash
 
     - name: Store artifacts for Realm.Search.${{ steps.get-version.outputs.version }}
