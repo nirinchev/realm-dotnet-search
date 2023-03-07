@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Realm.Search;
+namespace Realms.Search;
 
 /// <summary>
 /// Score options for a <see cref="AutocompleteDefinition"/> search.

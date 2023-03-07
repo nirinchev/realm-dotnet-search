@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
 
-namespace Realm.Search;
+namespace Realms.Search;
 
 /// <summary>
 /// The Atlas Search highlight option adds fields to the result set that display search terms in their original context.

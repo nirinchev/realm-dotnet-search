@@ -4,7 +4,7 @@ using Realms.Search;
 using System.Reflection;
 using System.Collections.Concurrent;
 
-namespace Realm.Search;
+namespace Realms.Search;
 
 internal static class ProjectionHelper
 {

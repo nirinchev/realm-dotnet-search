@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Realm.Search;
+namespace Realms.Search;
 
 internal static class Argument
 {

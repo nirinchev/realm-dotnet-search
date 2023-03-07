@@ -3,7 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 
-namespace Realm.Search;
+namespace Realms.Search;
 
 internal class LowercaseEnumSerializer<T> : SerializerBase<T>
     where T : struct
