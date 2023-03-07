@@ -9,6 +9,11 @@ using System.Threading.Tasks;
 
 namespace Realms.Search;
 
+/// <summary>
+/// A search client that simplifies construction of <see href="https://www.mongodb.com/docs/atlas/atlas-search/">Atlas Search</see>
+/// aggregation pipelines.
+/// </summary>
+/// <typeparam name="TModel">The type of documents contained in the collection.</typeparam>
 public readonly struct SearchClient<TModel>
     where TModel : class, ISearchModel
 {
@@ -21,6 +26,15 @@ public readonly struct SearchClient<TModel>
         _index = index;
     }
 
+    /// <summary>
+    /// Execute an autocomplete search.
+    /// </summary>
+    /// <param name="autocomplete">The <see cref="AutocompleteDefinition"/> that configures the autocomplete search.</param>
+    /// <param name="projection">An optional projection that controls which fields should be returned by the server.</param>
+    /// <param name="highlightOptions">A set of options controlling the match highlight behavior.</param>
+    /// <param name="limit">The maximum number of elements to return.</param>
+    /// <returns>A collection containing the documents that matched the autocomplete query.</returns>
+    /// <seealso href="https://www.mongodb.com/docs/atlas/atlas-search/autocomplete/"/>
     public Task<TModel[]> Autocomplete(
         AutocompleteDefinition autocomplete,
         ProjectionModel? projection = null,
@@ -30,6 +44,15 @@ public readonly struct SearchClient<TModel>
         return SearchCore(autocomplete, projection, highlightOptions, limit);
     }
 
+    /// <summary>
+    /// Execute a compound search.
+    /// </summary>
+    /// <param name="compound">The <see cref="CompoundDefinition"/> that configures the search.</param>
+    /// <param name="projection">An optional projection that controls which fields should be returned by the server.</param>
+    /// <param name="highlightOptions">A set of options controlling the match highlight behavior.</param>
+    /// <param name="limit">The maximum number of elements to return.</param>
+    /// <returns>A collection containing the documents that matched the search query.</returns>
+    /// <seealso href="https://www.mongodb.com/docs/atlas/atlas-search/compound/"/>
     public Task<TModel[]> Compound(
         CompoundDefinition compound,
         ProjectionModel? projection = null,

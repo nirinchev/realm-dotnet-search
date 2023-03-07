@@ -48,7 +48,7 @@ public static class SearchService
 		projection.Address = false;
 		projection.ExtraExpressions!.Add("address.location", true);
 		projection.ExtraExpressions!.Add("address.street", true);
-
+		
 		var definition = new CompoundDefinition
 		{
 			MustClauses =
