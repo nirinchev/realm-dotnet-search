@@ -28,6 +28,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <DisableFody>true</DisableFody>
+    <RootNamespace>Realms.Search</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Realm" Version="10.20.0" />

@@ -1,17 +1,16 @@
 ﻿using System;
 using MongoDB.Bson;
 
-namespace Realm.Search
+namespace Realms.Search;
+
+/// <summary>
+/// TODO: document me
+/// </summary>
+public class EmbeddedDocumentDefinition : ISearchDefinition
 {
-    /// <summary>
-    /// TODO: document me
-    /// </summary>
-	public class EmbeddedDocumentDefinition : ISearchDefinition
-	{
-        BsonDocument ISearchDefinition.Render()
-        {
-            throw new NotImplementedException();
-        }
+    BsonDocument ISearchDefinition.Render()
+    {
+        throw new NotImplementedException();
     }
 }
 

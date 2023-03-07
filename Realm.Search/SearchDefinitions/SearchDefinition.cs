@@ -3,11 +3,10 @@ using System.IO;
 using MongoDB.Bson;
 using Realms.Search;
 
-namespace Realm.Search
+namespace Realms.Search;
+
+internal interface ISearchDefinition
 {
-    internal interface ISearchDefinition
-    {
-        BsonDocument Render();
-    }
+    BsonDocument Render();
 }
 

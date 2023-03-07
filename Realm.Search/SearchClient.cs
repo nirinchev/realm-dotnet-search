@@ -1,5 +1,4 @@
 ﻿using MongoDB.Bson;
-using Realm.Search;
 using Realms.Sync;
 using System;
 using System.Collections.Concurrent;
@@ -73,7 +72,7 @@ public readonly struct SearchClient<TModel>
             // If we have highlight options, we need to include them in the search stage
             searchStage["highlight"] = highlightOptions.Render();
 
-            // If we're projecting, we need to also include the highlights in the project stage 
+            // If we're projecting, we need to also include the highlights in the project stage
             if (projectStage != null && !projectStage.Contains("searchHighlights"))
             {
                 projectStage["searchHighlights"] = new BsonDocument("$meta", "searchHighlights");
