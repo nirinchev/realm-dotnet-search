@@ -37,6 +37,11 @@ namespace Realm.Search.Demo.ViewModels
 
         private async Task Search(string query)
         {
+            if (string.IsNullOrEmpty(query))
+            {
+                return;
+            }
+
             try
             {
                 var results = await SearchService.Autocomplete(query);

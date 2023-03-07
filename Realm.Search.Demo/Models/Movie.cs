@@ -7,10 +7,5 @@ namespace Realm.Search.Demo.Models;
 public partial class Movie : ISearchModel
 {
     [BsonElement("title")]
-    public string Title { get; set; }
-
-    private void Foo()
-    {
-        var test = Projection.Default;
-    }
+    public string Title { get; set; } = null!;
 }
