@@ -12,7 +12,7 @@ namespace Realms.Search;
 /// </summary>
 public class CompoundDefinition : ISearchDefinition
 {
-	private List<BsonDocument> _mustClauses = new();
+    private List<BsonDocument> _mustClauses = new();
     private List<BsonDocument> _shouldClauses = new();
     private List<BsonDocument> _mustNotClauses = new();
     private List<BsonDocument> _filterClauses = new();

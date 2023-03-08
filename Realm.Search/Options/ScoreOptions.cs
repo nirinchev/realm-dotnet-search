@@ -22,7 +22,7 @@ public class ScoreOptions
     /// <returns>An <see cref="ScoreOptions"/> instance that will multiply the search score.</returns>
     /// <seealso href="https://www.mongodb.com/docs/atlas/atlas-search/scoring/#boost"/>
 	public static ScoreOptions Boost(float value)
-		=> new(boost: new(value));
+        => new(boost: new(value));
 
     /// <summary>
     /// Constructs a boost option that multiplies the score by the value contained in a field of the document.
@@ -32,7 +32,7 @@ public class ScoreOptions
     /// <returns>An <see cref="ScoreOptions"/> instance that will multiply the search score.</returns>
     /// <seealso href="https://www.mongodb.com/docs/atlas/atlas-search/scoring/#boost"/>
 	public static ScoreOptions Boost(string path, float undefined = 0)
-		=> new(boost: new(path, undefined));
+        => new(boost: new(path, undefined));
 
     /// <summary>
     /// Constructs a constant option that replaces the base score with the specified number.
@@ -41,31 +41,31 @@ public class ScoreOptions
     /// <returns>An <see cref="ScoreOptions"/> instance that replaces the search score by a constant.</returns>
     /// <seealso href="https://www.mongodb.com/docs/atlas/atlas-search/scoring/#constant"/>
 	public static ScoreOptions Constant(float value)
-		=> new(constant: new(value));
+        => new(constant: new(value));
 
-	private ScoreOptions(BoostOptions? boost = null, ConstantOptions? constant = null)
-	{
+    private ScoreOptions(BoostOptions? boost = null, ConstantOptions? constant = null)
+    {
         _boost = boost;
         _constant = constant;
-	}
+    }
 
-	internal BsonDocument Render()
-	{
-		var result = new BsonDocument();
-		if (_boost != null)
-		{
-			result["boost"] = _boost.Render();
-		}
+    internal BsonDocument Render()
+    {
+        var result = new BsonDocument();
+        if (_boost != null)
+        {
+            result["boost"] = _boost.Render();
+        }
         else if (_constant != null)
         {
             result["constant"] = _constant.Render();
         }
-		else
-		{
-			throw new Exception("Unexpected ScoreOptions value - no options have been set.");
-		}
+        else
+        {
+            throw new Exception("Unexpected ScoreOptions value - no options have been set.");
+        }
 
-		return result;
+        return result;
     }
 }
 
@@ -132,7 +132,7 @@ public class EmbeddedScoreOptions
     /// <returns>An <see cref="EmbeddedScoreOptions"/> instance that replaces the search score with the result of an aggregation across multiple documents.</returns>
     /// <seealso href="https://www.mongodb.com/docs/atlas/atlas-search/scoring/#embedded"/>
     public static EmbeddedScoreOptions Embedded(EmbeddedAggregateStrategy aggregate = EmbeddedAggregateStrategy.Sum, ScoreOptions? outerScope = null)
-		=> new(embedded: new(outerScope, aggregate));
+        => new(embedded: new(outerScope, aggregate));
 
     private EmbeddedScoreOptions(BoostOptions? boost = null, ConstantOptions? constant = null, BsonDocument? function = null, EmbeddedOptions? embedded = null)
     {
@@ -172,20 +172,20 @@ public class EmbeddedScoreOptions
 
 internal class BoostOptions
 {
-	public float? Value { get; }
+    public float? Value { get; }
 
-	public string? Path { get; }
+    public string? Path { get; }
 
-	public float Undefined { get; }
+    public float Undefined { get; }
 
-	internal BoostOptions(float value)
-	{
+    internal BoostOptions(float value)
+    {
         Value = value;
-	}
+    }
 
-	internal BoostOptions(string path, float undefined)
-	{
-		Path = Argument.NotNull(path, nameof(path));
+    internal BoostOptions(string path, float undefined)
+    {
+        Path = Argument.NotNull(path, nameof(path));
         Undefined = undefined;
     }
 
@@ -217,10 +217,10 @@ internal class ConstantOptions
 {
     public float Value { get; }
 
-	internal ConstantOptions(float value)
-	{
-		Value = value;
-	}
+    internal ConstantOptions(float value)
+    {
+        Value = value;
+    }
 
     internal BsonDocument Render() => new("value", Value);
 }
@@ -229,13 +229,13 @@ internal class EmbeddedOptions
 {
     public EmbeddedAggregateStrategy Aggregate { get; }
 
-	public ScoreOptions? OuterScope { get; }
+    public ScoreOptions? OuterScope { get; }
 
-	internal EmbeddedOptions(ScoreOptions? outerScope, EmbeddedAggregateStrategy aggregate)
-	{
+    internal EmbeddedOptions(ScoreOptions? outerScope, EmbeddedAggregateStrategy aggregate)
+    {
         OuterScope = outerScope;
-		Aggregate = aggregate;
-	}
+        Aggregate = aggregate;
+    }
 
     internal BsonDocument Render()
     {
