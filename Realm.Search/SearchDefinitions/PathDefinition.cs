@@ -7,8 +7,8 @@ namespace Realms.Search
     /// <summary>
     /// A class representing a path or a collection of paths in the document.
     /// </summary>
-	public class PathDefinition
-	{
+    public class PathDefinition
+    {
         internal BsonValue Value { get; }
 
         private PathDefinition(BsonValue value)
@@ -27,9 +27,9 @@ namespace Realms.Search
         /// An operator that converts an array of paths to a <see cref="PathDefinition"/>.
         /// </summary>
         /// <param name="paths">
-		/// The paths in the document that Atlas will search for. Documents which match on any of the
+        /// The paths in the document that Atlas will search for. Documents which match on any of the
         /// specified fields are included in the result set.
-		/// </param>
+        /// </param>
         public static implicit operator PathDefinition(string[] paths)
             => new(new BsonArray(paths.Select(t => new BsonString(t))));
     }

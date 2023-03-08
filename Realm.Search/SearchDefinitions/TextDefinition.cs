@@ -29,8 +29,8 @@ namespace Realms.Search
         /// <param name="score">The score assigned to search matches.</param>
         public TextDefinition(QueryDefinition query, PathDefinition path, FuzzyOptions? fuzzy = null, ScoreOptions? score = null)
             : base(query, path, score, fuzzy)
-		{
-		}
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TextDefinition"/> class.
