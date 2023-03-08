@@ -2,6 +2,7 @@
 using System.IO;
 using MongoDB.Bson;
 using Realms.Search;
+using static Realms.ThreadSafeReference;
 
 namespace Realms.Search;
 
@@ -18,7 +19,7 @@ public interface ISearchDefinition
 }
 
 /// <summary>
-/// A base class for all search definitions that have a query, path, and score options.
+/// The base class for all query search definitions.
 /// </summary>
 public abstract class SearchDefinitionBase : ISearchDefinition
 {
@@ -26,12 +27,6 @@ public abstract class SearchDefinitionBase : ISearchDefinition
     /// The name of the operator this search definition represents
     /// </summary>
     protected abstract string OperatorName { get; }
-
-    /// <summary>
-    /// String or strings to search for. If there are multiple terms in a string, Atlas Search also looks for a match for each term in the string separately.
-    /// </summary>
-    /// <value>The search query.</value>
-    public QueryDefinition Query { get; }
 
     /// <summary>
     /// Indexed <see href="https://www.mongodb.com/docs/atlas/atlas-search/define-field-mappings/#std-label-bson-data-types-autocomplete">autocomplete</see>
@@ -49,22 +44,19 @@ public abstract class SearchDefinitionBase : ISearchDefinition
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchDefinitionBase"/> class..
     /// </summary>
-    /// <param name="query">The string to search for.</param>
     /// <param name="path">The field path in the document.</param>
     /// <param name="score">The score assigned to search matches.</param>
-    protected SearchDefinitionBase(QueryDefinition query, PathDefinition path, ScoreOptions? score)
+    protected SearchDefinitionBase(PathDefinition path, ScoreOptions? score)
     {
-        Query = query;
-        Path = path;
         Score = score;
+        Path = path;
     }
 
     BsonDocument ISearchDefinition.Render()
     {
         var definition = new BsonDocument
         {
-            ["query"] = Query.Value,
-            ["path"] = Path.Value,
+            ["path"] = Path.Value
         };
 
         if (Score != null)
@@ -80,14 +72,45 @@ public abstract class SearchDefinitionBase : ISearchDefinition
     /// <summary>
     /// Populate the definition with any fields that are added in the derived class.
     /// </summary>
-    /// <param name="baseDefinition">The definition populated with <see cref="Query"/>, <see cref="Path"/>, and <see cref="Score"/>.</param>
+    /// <param name="baseDefinition">The definition populated with the <see cref="Path"/> and the <see cref="Score"/>.</param>
     protected abstract void PopulateDefinition(BsonDocument baseDefinition);
+}
+
+/// <summary>
+/// A base class for all search definitions that have a query, path, and score options.
+/// </summary>
+public abstract class QuerySearchDefinitionBase : SearchDefinitionBase
+{
+
+    /// <summary>
+    /// String or strings to search for. If there are multiple terms in a string, Atlas Search also looks for a match for each term in the string separately.
+    /// </summary>
+    /// <value>The search query.</value>
+    public QueryDefinition Query { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QuerySearchDefinitionBase"/> class..
+    /// </summary>
+    /// <param name="query">The string to search for.</param>
+    /// <param name="path">The field path in the document.</param>
+    /// <param name="score">The score assigned to search matches.</param>
+    protected QuerySearchDefinitionBase(QueryDefinition query, PathDefinition path, ScoreOptions? score)
+        : base(path, score)
+    {
+        Query = query;
+    }
+
+    /// <inheritdoc/>
+    protected override void PopulateDefinition(BsonDocument baseDefinition)
+    {
+        baseDefinition["query"] = Query.Value;
+    }
 }
 
 /// <summary>
 /// Base class for all search definitions that are capable of executing fuzzy searches.
 /// </summary>
-public abstract class FuzzySearchDefinitionBase : SearchDefinitionBase
+public abstract class FuzzySearchDefinitionBase : QuerySearchDefinitionBase
 {
     /// <summary>
     /// Enable fuzzy search. Find strings which are similar to the search term or terms.
@@ -111,6 +134,8 @@ public abstract class FuzzySearchDefinitionBase : SearchDefinitionBase
     /// <inheritdoc/>
     protected override void PopulateDefinition(BsonDocument baseDefinition)
     {
+        base.PopulateDefinition(baseDefinition);
+
         if (Fuzzy != null)
         {
             baseDefinition["fuzzy"] = Fuzzy.Render();

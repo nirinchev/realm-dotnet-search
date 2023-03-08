@@ -12,5 +12,13 @@ internal static class Argument
 
         return value;
     }
+
+    public static void Ensure(bool condition, string message)
+    {
+        if (!condition)
+        {
+            throw new ArgumentException(message);
+        }
+    }
 }
 

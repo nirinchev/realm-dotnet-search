@@ -6,6 +6,8 @@ using Realms.Sync;
 using RealmApp = Realms.Sync.App;
 using Location = Microsoft.Maui.Devices.Sensors.Location;
 using MongoDB.Bson.Serialization.Attributes;
+using Realms.Search;
+using Realms.Search.Geo;
 
 namespace Realm.Search.Demo.Services;
 
@@ -48,35 +50,12 @@ public static class SearchService
 		projection.Address = false;
 		projection.ExtraExpressions!.Add("address.location", true);
 		projection.ExtraExpressions!.Add("address.street", true);
-		
-		var definition = new CompoundDefinition
-		{
-			MustClauses =
-			{
-				new("geoWithin", new BsonDocument()
-				{
-					["circle"] = new BsonDocument()
-					{
-						["center"] = new BsonDocument()
-						{
-							["type"] = "Point",
-							["coordinates"] = new BsonArray() { center.Longitude, center.Latitude },
-                        },
-						["radius"] = distance
-                    },
-					["path"] = "address.location"
-				})
-			},
-			ShouldClauses =
-			{
-				new("phrase", new BsonDocument()
-				{
-					["path"] = "description",
-					["query"] = query
-				})
-			}
-		};
 
+		var geoCircle = new Circle(new(center.Latitude, center.Longitude), radius: distance);
+		var definition = new CompoundDefinition()
+			.Must(new GeoWithinDefinition(geoCircle, path: "address.location"))
+			.Should(new PhraseDefinition(query, "description"));
+	
 		return await _listingCollection.Search().Compound(definition, projection: projection, highlightOptions: new("description"), limit: 10);
 	}
 
