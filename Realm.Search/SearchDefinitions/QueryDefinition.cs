@@ -22,7 +22,7 @@ namespace Realms.Search
 		/// </summary>
 		/// <param name="query">The query that Atlas will search for.</param>
 		public static implicit operator QueryDefinition(string query)
-			=> new QueryDefinition(new BsonString(query));
+			=> new(new BsonString(query));
 
         /// <summary>
         /// An operator that converts a list of expressions to a <see cref="QueryDefinition"/>.
@@ -32,6 +32,6 @@ namespace Realms.Search
 		/// Atlas Search also looks for a match for each term in the string separately.
 		/// </param>
         public static implicit operator QueryDefinition(string[] queryTerms)
-			=> new QueryDefinition(new BsonArray(queryTerms.Select(t => new BsonString(t))));
+			=> new(new BsonArray(queryTerms.Select(t => new BsonString(t))));
 	}
 }

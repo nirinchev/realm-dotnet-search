@@ -9,7 +9,7 @@ namespace Realms.Search;
 /// Score options for a <see cref="AutocompleteDefinition"/> search.
 /// </summary>
 /// <seealso href="https://www.mongodb.com/docs/atlas/atlas-search/scoring/"/>
-public class AutocompleteScoreOptions
+public class ScoreOptions
 {
     private readonly BoostOptions? _boost;
 
@@ -19,9 +19,9 @@ public class AutocompleteScoreOptions
     /// Constructs a boost option that multiplies the score by the specified <paramref name="value"/>.
     /// </summary>
     /// <param name="value">The value by which the score will be multiplied.</param>
-    /// <returns>An <see cref="AutocompleteScoreOptions"/> instance that will multiply the search score.</returns>
+    /// <returns>An <see cref="ScoreOptions"/> instance that will multiply the search score.</returns>
     /// <seealso href="https://www.mongodb.com/docs/atlas/atlas-search/scoring/#boost"/>
-	public static AutocompleteScoreOptions Boost(float value)
+	public static ScoreOptions Boost(float value)
 		=> new(boost: new(value));
 
     /// <summary>
@@ -29,21 +29,21 @@ public class AutocompleteScoreOptions
     /// </summary>
     /// <param name="path">Name of the numeric field whose value to multiply the default base score by.</param>
     /// <param name="undefined">Numeric value to substitute for path if the numeric field specified through path is not found in the documents. If omitted, defaults to 0.</param>
-    /// <returns>An <see cref="AutocompleteScoreOptions"/> instance that will multiply the search score.</returns>
+    /// <returns>An <see cref="ScoreOptions"/> instance that will multiply the search score.</returns>
     /// <seealso href="https://www.mongodb.com/docs/atlas/atlas-search/scoring/#boost"/>
-	public static AutocompleteScoreOptions Boost(string path, float undefined = 0)
+	public static ScoreOptions Boost(string path, float undefined = 0)
 		=> new(boost: new(path, undefined));
 
     /// <summary>
     /// Constructs a constant option that replaces the base score with the specified number.
     /// </summary>
     /// <param name="value">The value that replaces the base score.</param>
-    /// <returns>An <see cref="AutocompleteScoreOptions"/> instance that replaces the search score by a constant.</returns>
+    /// <returns>An <see cref="ScoreOptions"/> instance that replaces the search score by a constant.</returns>
     /// <seealso href="https://www.mongodb.com/docs/atlas/atlas-search/scoring/#constant"/>
-	public static AutocompleteScoreOptions Constant(float value)
+	public static ScoreOptions Constant(float value)
 		=> new(constant: new(value));
 
-	private AutocompleteScoreOptions(BoostOptions? boost = null, ConstantOptions? constant = null)
+	private ScoreOptions(BoostOptions? boost = null, ConstantOptions? constant = null)
 	{
         _boost = boost;
         _constant = constant;
@@ -62,94 +62,10 @@ public class AutocompleteScoreOptions
         }
 		else
 		{
-			throw new Exception("Unexpected AutocompleteScoreOptions value - no options have been set.");
+			throw new Exception("Unexpected ScoreOptions value - no options have been set.");
 		}
 
 		return result;
-    }
-}
-
-/// <summary>
-/// Score options for a general-purpose atlas search.
-/// </summary>
-/// <seealso href="https://www.mongodb.com/docs/atlas/atlas-search/scoring/"/>
-public class ScoreOptions
-{
-    private readonly BoostOptions? _boost;
-
-    private readonly ConstantOptions? _constant;
-
-    private readonly BsonDocument? _function;
-
-    /// <summary>
-    /// Constructs a boost option that multiplies the score by the specified <paramref name="value"/>.
-    /// </summary>
-    /// <param name="value">The value by which the score will be multiplied.</param>
-    /// <returns>A <see cref="ScoreOptions"/> instance that will multiply the search score.</returns>
-    /// <seealso href="https://www.mongodb.com/docs/atlas/atlas-search/scoring/#boost"/>
-	public static ScoreOptions Boost(float value)
-        => new(boost: new(value));
-
-    /// <summary>
-    /// Constructs a boost option that multiplies the score by the value contained in a field of the document.
-    /// </summary>
-    /// <param name="path">Name of the numeric field whose value to multiply the default base score by.</param>
-    /// <param name="undefined">Numeric value to substitute for path if the numeric field specified through path is not found in the documents. If omitted, defaults to 0.</param>
-    /// <returns>A <see cref="ScoreOptions"/> instance that will multiply the search score.</returns>
-    /// <seealso href="https://www.mongodb.com/docs/atlas/atlas-search/scoring/#boost"/>
-	public static ScoreOptions Boost(string path, float undefined = 0)
-        => new(boost: new(path, undefined));
-
-    /// <summary>
-    /// Constructs a constant option that replaces the base score with the specified number.
-    /// </summary>
-    /// <param name="value">The value that replaces the base score.</param>
-    /// <returns>A <see cref="ScoreOptions"/> instance that replaces the search score with a constant.</returns>
-    /// <seealso href="https://www.mongodb.com/docs/atlas/atlas-search/scoring/#constant"/>
-	public static ScoreOptions Constant(float value)
-        => new(constant: new(value));
-
-    /// <summary>
-    /// Constructs a function option that allows you to alter the base score.
-    /// </summary>
-    /// <param name="function">
-    /// The function option allows you to alter the final score of the document using a numeric field.
-    /// You can specify the numeric field for computing the final score through an expression.If the final
-    /// result of the function score is less than 0, Atlas Search replaces the score with 0.
-    /// </param>
-    /// <returns>A <see cref="ScoreOptions"/> instance that replaces the search score with the result of a function call.</returns>
-    /// <seealso href="https://www.mongodb.com/docs/atlas/atlas-search/scoring/#function"/>
-    public static ScoreOptions Function(BsonDocument function)
-		=> new(function: Argument.NotNull(function, nameof(function)));
-
-	private ScoreOptions(BoostOptions? boost = null, ConstantOptions? constant = null, BsonDocument ? function = null)
-	{
-        _boost = boost;
-        _constant = constant;
-        _function = function;
-	}
-
-    internal BsonDocument Render()
-    {
-        var result = new BsonDocument();
-        if (_boost != null)
-        {
-            result["boost"] = _boost.Render();
-        }
-        else if (_constant != null)
-        {
-            result["constant"] = _constant.Render();
-        }
-        else if (_function != null)
-        {
-            result["function"] = _function;
-        }
-        else
-        {
-            throw new Exception("Unexpected ScoreOptions value - no options have been set.");
-        }
-
-        return result;
     }
 }
 
@@ -247,7 +163,7 @@ public class EmbeddedScoreOptions
         }
         else
         {
-            throw new Exception("Unexpected AutocompleteScoreOptions value - no options have been set.");
+            throw new Exception("Unexpected EmbeddedScoreOptions value - no options have been set.");
         }
 
         return result;

@@ -11,64 +11,125 @@ namespace Realms.Search;
 /// A search definition for an <see href="https://www.mongodb.com/docs/atlas/atlas-search/compound/">compound</see> search.
 /// </summary>
 public class CompoundDefinition : ISearchDefinition
-	{
+{
+	private List<BsonDocument> _mustClauses = new();
+    private List<BsonDocument> _shouldClauses = new();
+    private List<BsonDocument> _mustNotClauses = new();
+    private List<BsonDocument> _filterClauses = new();
+
     /// <summary>
-    /// Clauses that must match to for a document to be included in the results. The returned score is the sum
+    /// Adds a clause that must match for the document to be included in the results. The returned score is the sum
     /// of the scores of all the subqueries in the clause.
     /// </summary>
     /// <remarks>Maps to the AND boolean operator.</remarks>
-    /// <value>The clauses that must match the document.</value>
-		public List<BsonDocument> MustClauses { get; set; } = new();
+    /// <param name="document">The document representing the clause.</param>
+    /// <returns>The same compound definition to allow for fluent chaining.</returns>
+    public CompoundDefinition Must(BsonDocument document)
+    {
+        _mustClauses.Add(document);
+        return this;
+    }
 
     /// <summary>
-    /// Clauses that you prefer to match in documents that are included in the results. Documents that contain a
+    /// Adds a clause that must match for the document to be included in the results. The returned score is the sum
+    /// of the scores of all the subqueries in the clause.
+    /// </summary>
+    /// <remarks>Maps to the AND boolean operator.</remarks>
+    /// <param name="definition">The document representing the clause.</param>
+    /// <returns>The same compound definition to allow for fluent chaining.</returns>
+    public CompoundDefinition Must(ISearchDefinition definition) => Must(definition.Render());
+
+    /// <summary>
+    /// Adds a clause that should match in documents that are included in the results. Documents that contain a
     /// match for a should clause have higher scores than documents that don't contain a should clause. The returned
     /// score is the sum of the scores of all the subqueries in the clause. If you use more than one should clause,
-    /// you can use the minimumShouldMatch option to specify a minimum number of should clauses that must match to
-    /// include a document in the results.If omitted, the minimumShouldMatch option defaults to 0.
+    /// you can use the <see cref="MinimumShouldMatch"/> option to specify a minimum number of should clauses that must match to
+    /// include a document in the results.
     /// </summary>
     /// <remarks>Maps to the OR boolean operator.</remarks>
-    /// <value>The clauses that should match the document.</value>
-		public List<BsonDocument> ShouldClauses { get; set; } = new();
+    /// <param name="document">The document representing the clause.</param>
+    /// <returns>The same compound definition to allow for fluent chaining.</returns>
+    public CompoundDefinition Should(BsonDocument document)
+    {
+        _shouldClauses.Add(document);
+        return this;
+    }
 
     /// <summary>
-    /// Clauses that must not match for a document to be included in the results. mustNot clauses don't contribute to a returned document's score.
+    /// Adds a clause that should match in documents that are included in the results. Documents that contain a
+    /// match for a should clause have higher scores than documents that don't contain a should clause. The returned
+    /// score is the sum of the scores of all the subqueries in the clause. If you use more than one should clause,
+    /// you can use the <see cref="MinimumShouldMatch"/> option to specify a minimum number of should clauses that must match to
+    /// include a document in the results.
+    /// </summary>
+    /// <remarks>Maps to the OR boolean operator.</remarks>
+    /// <param name="definition">The document representing the clause.</param>
+    /// <returns>The same compound definition to allow for fluent chaining.</returns>
+    public CompoundDefinition Should(ISearchDefinition definition) => Should(definition.Render());
+
+    /// <summary>
+    /// Adds a clause that must not match for a document to be included in the results. These clauses don't contribute to a returned document's score.
     /// </summary>
     /// <remarks>Maps to the AND NOT boolean operator.</remarks>
-    /// <value>The clauses that must not match the document.</value>
-    public List<BsonDocument> MustNotClauses { get; set; } = new();
+    /// <param name="document">The document representing the clause.</param>
+    /// <returns>The same compound definition to allow for fluent chaining.</returns>
+    public CompoundDefinition MustNot(BsonDocument document)
+    {
+        _mustNotClauses.Add(document);
+        return this;
+    }
 
     /// <summary>
-    /// Clauses that must all match for a document to be included in the results. filter clauses do not contribute to a returned document's score.
+    /// Adds a clause that must not match for a document to be included in the results. These clauses don't contribute to a returned document's score.
     /// </summary>
-    /// <value>The filter clauses.</value>
-    public List<BsonDocument> FilterClauses { get; set; } = new();
+    /// <remarks>Maps to the AND NOT boolean operator.</remarks>
+    /// <param name="definition">The document representing the clause.</param>
+    /// <returns>The same compound definition to allow for fluent chaining.</returns>
+    public CompoundDefinition MustNot(ISearchDefinition definition) => MustNot(definition.Render());
+
+    /// <summary>
+    /// Adds a clause that must match for a document to be included in the results. These clauses do not contribute to a returned document's score.
+    /// </summary>
+    /// <param name="document">The document representing the clause.</param>
+    /// <returns>The same compound definition to allow for fluent chaining.</returns>
+    public CompoundDefinition Filter(BsonDocument document)
+    {
+        _filterClauses.Add(document);
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a clause that must match for a document to be included in the results. These clauses do not contribute to a returned document's score.
+    /// </summary>
+    /// <param name="definition">The document representing the clause.</param>
+    /// <returns>The same compound definition to allow for fluent chaining.</returns>
+    public CompoundDefinition Filter(ISearchDefinition definition) => Filter(definition.Render());
 
     /// <summary>
     /// In a query with multiple should clauses, you can use the miniumumShouldMatch option to specify a minimum number of clauses which must match to return a result.
     /// </summary>
-    /// <value>The minimum number of <see cref="ShouldClauses"/> that must match the document to be returned.</value>
+    /// <value>The minimum number of <see cref="Should(ISearchDefinition)"/> clauses that must match the document to be returned.</value>
     public int MinimumShouldMatch { get; set; }
 
     BsonDocument ISearchDefinition.Render()
     {
         var document = new BsonDocument();
-        if (MustClauses?.Any() == true)
+        if (_mustClauses.Any())
         {
-            document.Add("must", new BsonArray(MustClauses));
+            document.Add("must", new BsonArray(_mustClauses));
         }
-        if (MustNotClauses?.Any() == true)
+        if (_mustNotClauses.Any())
         {
-            document.Add("mustNot", new BsonArray(MustNotClauses));
+            document.Add("mustNot", new BsonArray(_mustNotClauses));
         }
 
-        if (ShouldClauses?.Any() == true)
+        if (_shouldClauses.Any())
         {
-            document.Add("should", new BsonArray(ShouldClauses));
+            document.Add("should", new BsonArray(_shouldClauses));
         }
-        if (FilterClauses?.Any() == true)
+        if (_filterClauses.Any())
         {
-            document.Add("filter", new BsonArray(FilterClauses));
+            document.Add("filter", new BsonArray(_filterClauses));
         }
 
         if (MinimumShouldMatch > 0)
