@@ -56,9 +56,27 @@ public readonly struct SearchClient<TModel>
         CompoundDefinition compound,
         ProjectionModel? projection = null,
         HighlightOptions? highlightOptions = null,
-        int limit = 20)
+        int limit = 100)
     {
         return SearchCore(compound, projection, highlightOptions, limit);
+    }
+
+    /// <summary>
+    /// Execute a text search
+    /// </summary>
+    /// <param name="text">The <see cref="TextDefinition"/> that configures the search.</param>
+    /// <param name="projection">An optional projection that controls which fields should be returned by the server.</param>
+    /// <param name="highlightOptions">A set of options controlling the match highlight behavior.</param>
+    /// <param name="limit">The maximum number of elements to return.</param>
+    /// <returns>A collection containing the documents that matched the search query.</returns>
+    /// <seealso href="https://www.mongodb.com/docs/atlas/atlas-search/text/"/>
+    public Task<TModel[]> Text(
+        TextDefinition text,
+        ProjectionModel? projection = null,
+        HighlightOptions? highlightOptions = null,
+        int limit = 100)
+    {
+        return SearchCore(text, projection, highlightOptions, limit);
     }
 
     private Task<TModel[]> SearchCore(ISearchDefinition searchDefinition, ProjectionModel? projection, HighlightOptions? highlightOptions, int? limit)
